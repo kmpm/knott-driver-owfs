@@ -1,7 +1,7 @@
 {
 	"owfs":{"host":"127.0.0.1", "port":4304},
 	"mqtt":{"host":"127.0.0.1", "port":1883},
-	"topic":{"prefix":"/raw/1wire"},
+	"topic":{"prefix":"1wire"},
 	"refresh": 10000
 }
 

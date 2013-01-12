@@ -1,7 +1,7 @@
 {
-  "name": "owmq",
+  "name": "knott-interface-owfs",
   "version": "0.0.1",
-  "description": "owfs to mqtt gateway",
+  "description": "owfs to knott/mqtt gateway",
   "main": "server.js",
   "dependencies": {
     "owfs": "~0.0.2",

@@ -6,7 +6,7 @@ var config = require('./config.json')
 var deviceinfo={};
 
 var owclient = new owfs.Client(config.owfs.host, config.owfs.port);
-
+var valid_keys=['/temperature', '/PIO'];
 
 function readDevices(mqclient){
 	owclient.dirall("/", function(nodes){
@@ -24,7 +24,7 @@ function readDevice(nod, mqclient){
 		values.forEach(function(value){
 			value = value.replace(nod, '');
 			//console.log(value);
-			if(value === '/temperature'){
+			if(valid_keys.indexOf(value)>=0){
 				readValue(nod, value, mqclient);
 			}
 		});
@@ -41,8 +41,15 @@ function readValue(nod, value, mqclient) {
     }
   }
   else{
+    deviceinfo[nod].alias = config.topic.prefix + nod;
     mqclient.publish({topic:"/config/1wire/deviceinfo" + nod + "/alias", retain:true, payload:config.topic.prefix + nod});
   }
+  if(! deviceinfo[nod].hasOwnProperty(value.substring(1))){
+    mqclient.publish({topic:"/config/1wire/deviceinfo" + nod + value, retain:true, payload:"ro"});
+  }
+  
+    
+  topic='/raw/' + topic;
 	//console.log("reading", vp);
 	owclient.read(vp, function(result){
 		console.log(topic, result);
@@ -80,6 +87,7 @@ mqtt.createClient(config.mqtt.port, config.mqtt.host, function(err, client){
   //listen for the subscribed topics so that 
   //we can get a proper alias for the device.
   client.on('publish', function(packet){
+    console.log(packet.topic, packet.payload);
     var topic = packet.topic.split('/');
     var device = '/' + topic[4];
     var key = topic[5];
