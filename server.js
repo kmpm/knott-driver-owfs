@@ -34,18 +34,18 @@ function readDevice(nod, mqclient){
 
 function readValue(nod, value, mqclient) {
 	var vp = nod + value;
-	var topic = config.topic.prefix + vp;
+	var topic = 'owfs' + vp;
   if(deviceinfo.hasOwnProperty(nod)){
     if(deviceinfo[nod].hasOwnProperty('alias')){
       topic = deviceinfo[nod].alias + value;
     }
   }
   else{
-    deviceinfo[nod].alias = config.topic.prefix + nod;
-    mqclient.publish({topic:"/config/1wire/deviceinfo" + nod + "/alias", retain:true, payload:config.topic.prefix + nod});
+    deviceinfo[nod]={alias: config.topic.prefix + nod};
+    mqclient.publish({topic:"/config/owfs/deviceinfo" + nod + "/alias", retain:true, payload:config.topic.prefix + nod});
   }
   if(! deviceinfo[nod].hasOwnProperty(value.substring(1))){
-    mqclient.publish({topic:"/config/1wire/deviceinfo" + nod + value, retain:true, payload:"ro"});
+    mqclient.publish({topic:"/config/owfs/deviceinfo" + nod + value, retain:true, payload:"ro"});
   }
   
     
@@ -68,7 +68,7 @@ mqtt.createClient(config.mqtt.port, config.mqtt.host, function(err, client){
 	client.connect({keepalive:30000});
 	client.on('connack', function(packet){
 		console.log("Connected to mqtt");
-    client.subscribe({topic:'/config/1wire/deviceinfo/#'});
+    client.subscribe({topic:'/config/owfs/deviceinfo/#'});
 		//readDevices(client);
 		setInterval(readDevices, config.refresh, client );
 	});
