@@ -1,6 +1,7 @@
 
 var owfs = require('owfs'),
-	mqtt = require('mqttjs');
+	mqtt = require('mqttjs'),
+  os = require('os');
 
 var config = require('./config.json')
 var deviceinfo={};
@@ -57,6 +58,9 @@ function readValue(nod, value, mqclient) {
 	});
 }
 
+function hartbeat(mqclient){
+  mqclient.publish({topic:'/config/owfs/nodes/' + os.hostname() +  "/hartbeat", payload:(new Date).toJSON(), retain:true});  
+}
 
 console.log(config);
 
@@ -71,6 +75,8 @@ mqtt.createClient(config.mqtt.port, config.mqtt.host, function(err, client){
     client.subscribe({topic:'/config/owfs/deviceinfo/#'});
 		//readDevices(client);
 		setInterval(readDevices, config.refresh, client );
+    hartbeat(client);
+    setInterval(hartbeat, 30000, client);
 	});
 
 	client.on('close', function() {
