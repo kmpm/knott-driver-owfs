@@ -2,6 +2,7 @@
 	"owfs":{"host":"127.0.0.1", "port":4304},
 	"mqtt":{"host":"127.0.0.1", "port":1883},
 	"topic":{"prefix":"owfs"},
-	"refresh": 10000
+	"refresh": 30000,
+  "loglevel": 2
 }
 
