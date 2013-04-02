@@ -4,6 +4,7 @@
   "description": "owfs to knott/mqtt gateway",
   "main": "server.js",
   "dependencies": {
+    "knott-driver": "*",
     "owfs": "~0.0.2",
     "mqttjs": "~0.1.7"
   },
